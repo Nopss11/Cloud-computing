@@ -1,0 +1,5 @@
+Fitur,Node.            js (Contohmu),      Python (ML),              PHP (Infra)
+Base Image,             node:18-alpine,    python:3.9-slim,          php:8.1-apache
+Installer,             npm install,        pip install,              docker-php-ext-install
+Folder Kerja,          /app,               /app,/                    var/www/html
+File Daftar Library,    package.json,      requirements.txt,        (Langsung copy/composer)
