@@ -1,0 +1,40 @@
+1. YAML (.yml) — Sangat Penting
+Ini digunakan di hampir semua modul otomatisasi.
+
+GitHub Actions (Modul DevOps): Kamu harus mengerti struktur YAML untuk mendefinisikan pipeline CI/CD (seperti jobs, steps, uses, dan env).
+
+CloudFormation (Modul IoT): Modul ini mewajibkan penggunaan Infrastructure as Code. Kamu harus bisa membaca dan mengedit file YAML untuk membuat resource AWS secara otomatis.
+
+Docker Compose: Kadang digunakan untuk mendefinisikan aplikasi multi-container.
+
+2. JSON (.json) — Sangat Penting
+JSON adalah bahasa komunikasi antar layanan AWS.
+
+IAM Policy: Jika kamu perlu membuat Custom Policy, kamu harus paham struktur JSON (Effect, Action, Resource).
+
+API Gateway & Lambda (Modul Serverless): Data yang dikirim dari frontend ke backend (lewat SQS atau Lambda) semuanya berbentuk JSON. Kamu harus tahu cara mengambil data dari payload JSON tersebut.
+
+ECS Task Definition: Konfigurasi container di ECS sering kali disajikan atau diedit dalam format JSON.
+
+3. Coding (Scripting) — Penting (Dasar-dasar)
+Kamu tidak perlu menjadi Full-stack Developer, tapi kamu harus paham:
+
+Bash Scripting (Shell): Digunakan pada User Data di EC2. Kamu harus bisa menulis perintah otomatis untuk instalasi software, mounting EFS, dan start aplikasi saat instance menyala.
+
+Node.js / Python (Lambda): Modul Serverless dan ML menggunakan file seperti writeOrder.js, websocket.js, dan payment.js. Kamu minimal harus bisa membaca alur logikanya agar tahu mengapa sebuah fungsi gagal (misal: salah nama tabel DynamoDB).
+
+Dockerfile: Kamu harus paham instruksi dasar Docker seperti FROM, RUN, COPY, dan EXPOSE untuk mem-package aplikasi ke dalam container (Modul DevOps).
+
+4. Format Lain (Markdown & SQL)
+SQL: Di modul yang menggunakan RDS (MySQL/PostgreSQL), kamu mungkin perlu menjalankan perintah dasar seperti CREATE TABLE atau INSERT untuk verifikasi database.
+
+Environment Variables (.env): Sering digunakan untuk menyimpan konfigurasi database atau endpoint API agar aplikasi bisa terhubung ke layanan lain.
+
+Strategi untuk Kamu (Hanya 2 Jam Sehari):
+Jangan belajar coding dari nol (seperti belajar algoritma rumit). Gunakan taktik ini:
+
+ATM (Amati, Tiru, Modifikasi): Lihat file contoh yang disediakan di modul (biasanya ada di repo GitHub yang diberikan saat lomba). Pahami bagian mana yang perlu diganti (misal: mengganti nama Bucket atau Region).
+
+Gunakan AI sebagai Debugger: Jika script YAML atau Bash kamu error, copy error-nya dan pelajari polanya.
+
+Hafalkan Snippet "User Data": Kamu akan selalu butuh script untuk mount EFS dan install docker/amazon-ssm-agent. Simpan catatan ini.
