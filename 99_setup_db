@@ -1,0 +1,17 @@
+#ini isi dari .ebextensions/hooks/prebuild/
+
+#!/bin/bash
+
+# 1. Lokasi staging area di AWS Linux terbaru
+APP_DIR="/var/app/staging"
+
+# 2. Masuk ke folder aplikasi
+cd $APP_DIR
+
+# 3. Tarik variabel environment dari file rahasia Beanstalk
+# Ini wajib agar DB_HOST, DB_USER, dll bisa terbaca oleh npm
+export $(cat /opt/elasticbeanstalk/deployment/env | xargs)
+
+# 4. Jalankan migrasi
+# Gunakan sudo -u webapp jika perlu, tapi biasanya cukup running sebagai root di prebuild
+npm run db:migrate
