@@ -1,25 +1,50 @@
 #!/bin/bash
-# 1. Update OS dan instal web server/bahasa pemrograman (PHP/Node/dll)
+# 1. SETUP LOGGING (Agar Anda bisa melihat prosesnya di AWS Console)
+exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+
+echo "=== Memulai konfigurasi Web Server dan Koneksi RDS ==="
+
+# 2. UPDATE OS & INSTALASI PAKET
+# Menginstal web server (Apache) dan PHP beserta modul MySQL
 dnf update -y
 dnf install -y httpd php php-mysqli
 
-# 2. Download kode aplikasi Anda (misal dari S3 atau GitHub)
-# wget https://s3.amazonaws.com/bucket-anda/aplikasi.zip
-# unzip aplikasi.zip -d /var/www/html/
+# 3. DEKLARASI VARIABEL DATABASE (Hardcoded)
+# Silakan sesuaikan DB_HOST dengan Endpoint RDS Anda yang sebenarnya
+DB_HOST="database-1.cf22a6isonvg.us-east-1.rds.amazonaws.com"
+DB_USER="nopal"
+DB_PASS="password_nopal_123"
+DB_NAME="database_nopal"
 
-# 3. Ambil kredensial dari AWS SSM (Aman, tidak ada teks password di sini)
-REGION=$(curl -s http://169.254.169.254/latest/meta-data/placement/region)
-DB_HOST=$(aws ssm get-parameter --name "/app/db/endpoint" --region $REGION --query "Parameter.Value" --output text)
-DB_USER=$(aws ssm get-parameter --name "/app/db/user" --region $REGION --query "Parameter.Value" --output text)
-DB_PASS=$(aws ssm get-parameter --name "/app/db/password" --region $REGION --with-decryption --query "Parameter.Value" --output text)
+# 4. MEMBUAT FILE APLIKASI WEB (PHP)
+# Skrip ini akan membuat file index.php yang otomatis menggunakan variabel di atas
+cat <<EOF > /var/www/html/index.php
+<?php
+// Mengambil data kredensial
+\$host = "$DB_HOST";
+\$user = "$DB_USER";
+\$pass = "$DB_PASS";
+\$db   = "$DB_NAME";
 
-# 4. Suntikkan ke file konfigurasi aplikasi (Misal: .env atau wp-config.php)
-cat <<EOF > /var/www/html/.env
-DATABASE_HOST=$DB_HOST
-DATABASE_USER=$DB_USER
-DATABASE_PASSWORD=$DB_PASS
+// Mencoba membuka koneksi ke Amazon RDS
+\$conn = new mysqli(\$host, \$user, \$pass, \$db);
+
+// Mengecek apakah koneksi berhasil atau gagal
+if (\$conn->connect_error) {
+    die("<h1 style='color:red;'>Koneksi ke RDS Gagal:</h1> <p>" . \$conn->connect_error . "</p>");
+}
+
+// Jika berhasil, tampilkan pesan ini di browser
+echo "<h1>Halo Nopal! Web Server di EC2 Berhasil Menyala.</h1>";
+echo "<p style='color:blue;'><b>Status: Koneksi ke Database RDS SUKSES!</b></p>";
+echo "<p>Terkoneksi ke host: <i>\$host</i></p>";
+?>
 EOF
 
-# 5. Nyalakan Web Server
+# Hapus index.html default bawaan Apache agar index.php kita yang terbaca
+rm -f /var/www/html/index.html
+chown -R apache:apache /var/www/html/
+
+# 5. MENYALAKAN WEB SERVER
 systemctl start httpd
 systemctl enable httpd
