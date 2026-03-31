@@ -1,2 +1,2 @@
 # Cloud-computing
-my project in way to LKSN
+my project to LKSN
