@@ -2,9 +2,6 @@
 
 #!/bin/bash
 
-# 1. Lokasi staging area di AWS Linux terbaru
-APP_DIR="/var/app/staging"
-
 # 2. Masuk ke folder aplikasi
 cd /var/app/stagging
 
